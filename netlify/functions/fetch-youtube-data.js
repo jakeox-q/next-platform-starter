@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://relevance-site.webflow.io, https://relevanceai.com', // Allow requests from both domains
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
         },
