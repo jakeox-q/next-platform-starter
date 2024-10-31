@@ -13,17 +13,24 @@ exports.handler = async function (event, context) {
     });
 
     let thumbnailUrl = response.data.thumbnail.url;
-    // Ensure the thumbnail URL is set to 640x360
     thumbnailUrl = thumbnailUrl.replace(/image_crop_resized=\d+x\d+/, "image_crop_resized=640x360");
 
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Allow all origins
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ thumbnailUrl })
     };
   } catch (error) {
     console.error("Error fetching Wistia data:", error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Allow all origins
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ error: "Failed to fetch Wistia data" })
     };
   }
