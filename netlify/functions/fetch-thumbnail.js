@@ -9,7 +9,7 @@ exports.handler = async function (event) {
       statusCode: 400,
       body: JSON.stringify({ error: "Wistia ID is required" }),
       headers: {
-        "Access-Control-Allow-Origin": "*", // Adjust this line if you want to specify a single origin
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
       },
     };
@@ -22,13 +22,14 @@ exports.handler = async function (event) {
       },
     });
 
-    const thumbnailUrl = response.data.thumbnail.url;
+    // Fetch the base thumbnail URL and append the desired dimensions
+    const thumbnailUrl = `${response.data.thumbnail.url}?image_crop_resized=640x360`;
 
     return {
       statusCode: 200,
       body: JSON.stringify({ thumbnailUrl }),
       headers: {
-        "Access-Control-Allow-Origin": "*", // Adjust this to your Webflow URL if needed
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
       },
     };
@@ -37,7 +38,7 @@ exports.handler = async function (event) {
       statusCode: 500,
       body: JSON.stringify({ error: "Failed to fetch Wistia data" }),
       headers: {
-        "Access-Control-Allow-Origin": "*", // Adjust this to your Webflow URL if needed
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
       },
     };
