@@ -1,33 +1,36 @@
 const axios = require('axios');
 
-exports.handler = async function(event, context) {
+exports.handler = async function (event, context) {
+  const wistiaID = event.queryStringParameters.wistiaID;
+
   try {
-    const wistiaID = event.queryStringParameters.wistiaID;
-    const apiKey = process.env.WISTIA_API_KEY;
-
-    if (!wistiaID || !apiKey) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Missing wistiaID or API key" })
-      };
-    }
-
     const response = await axios.get(`https://api.wistia.com/v1/medias/${wistiaID}.json`, {
       headers: {
-        Authorization: `Bearer ${apiKey}`
-      }
+        Authorization: `Bearer ${process.env.WISTIA_API_TOKEN}`,
+      },
     });
 
+    // Extract the duration from the response
     const duration = response.data.duration;
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ duration })
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Allows any origin
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: JSON.stringify({ duration }),
     };
   } catch (error) {
-    console.error("Error fetching Wistia duration:", error);
+    console.error('Error fetching Wistia data:', error);
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Internal Server Error" })
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Allows any origin
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: JSON.stringify({ error: 'Failed to fetch Wistia data' }),
     };
   }
 };
