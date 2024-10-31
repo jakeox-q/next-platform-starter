@@ -28,7 +28,7 @@ exports.handler = async function (event, context) {
     return {
       statusCode: 500,
       headers: {
-        'Access-Control-Allow-Origin': 'https://relevance-site.webflow.io, https://relevanceai.com', // Allow requests from both domains
+        'Access-Control-Allow-Origin': '*', // Allow requests from both domains
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ error: "Failed to fetch Wistia data" })
