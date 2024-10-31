@@ -1,48 +1,30 @@
 const axios = require("axios");
 
-exports.handler = async function (event) {
+exports.handler = async function (event, context) {
   const wistiaID = event.queryStringParameters.wistiaID;
   const apiKey = process.env.WISTIA_API_TOKEN;
-
-  if (!wistiaID) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Wistia ID is required" }),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    };
-  }
+  const url = `https://api.wistia.com/v1/medias/${wistiaID}.json`;
 
   try {
-    const response = await axios.get(`https://api.wistia.com/v1/medias/${wistiaID}.json`, {
+    const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
+        Authorization: `Bearer ${apiKey}`
+      }
     });
 
-    // Select the highest resolution thumbnail URL available
-    const largeThumbnailUrl = response.data.assets.find(
-      (asset) => asset.type === "still_image" && asset.width >= 640
-    )?.url || response.data.thumbnail.url;
+    let thumbnailUrl = response.data.thumbnail.url;
+    // Ensure the thumbnail URL is set to 640x360
+    thumbnailUrl = thumbnailUrl.replace(/image_crop_resized=\d+x\d+/, "image_crop_resized=640x360");
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ thumbnailUrl: largeThumbnailUrl }),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
+      body: JSON.stringify({ thumbnailUrl })
     };
   } catch (error) {
+    console.error("Error fetching Wistia data:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to fetch Wistia data" }),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
+      body: JSON.stringify({ error: "Failed to fetch Wistia data" })
     };
   }
 };
