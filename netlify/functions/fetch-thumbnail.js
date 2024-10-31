@@ -22,12 +22,14 @@ exports.handler = async function (event) {
       },
     });
 
-    // Fetch the base thumbnail URL and append the desired dimensions
-    const thumbnailUrl = `${response.data.thumbnail.url}?image_crop_resized=640x360`;
+    // Select the highest resolution thumbnail URL available
+    const largeThumbnailUrl = response.data.assets.find(
+      (asset) => asset.type === "still_image" && asset.width >= 640
+    )?.url || response.data.thumbnail.url;
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ thumbnailUrl }),
+      body: JSON.stringify({ thumbnailUrl: largeThumbnailUrl }),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type",
