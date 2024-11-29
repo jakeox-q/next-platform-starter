@@ -4,7 +4,7 @@ exports.handler = async (event, context) => {
     const videoId = event.queryStringParameters.videoId;
     const apiKey = process.env.YOUTUBE_API_KEY;
     
-    const allowedOrigins = ['https://relevance-site.webflow.io', 'https://relevanceai.com'];
+    const allowedOrigins = ['https://relevance-site.webflow.io', 'https://relevanceai.com', 'https://site.relevanceai.com'];
     const origin = event.headers.origin;
     const allowOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
 
